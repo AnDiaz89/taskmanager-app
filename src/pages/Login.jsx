@@ -21,7 +21,11 @@ function Login() {
       login(response.data.token);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al iniciar sesión');
+      if (err.code === 'ECONNABORTED' || !err.response) {
+        setError('El servidor está iniciando, esto puede tardar unos segundos. Intenta de nuevo.');
+      } else {
+        setError(err.response?.data?.error || 'Error al iniciar sesión');
+      }
     } finally {
       setLoading(false);
     }
