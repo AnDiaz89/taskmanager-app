@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --color-bg: #faf9f5;
+  --color-surface: #ffffff;
+  --color-ink: #1e2a22;
+  --color-muted: #8a8578;
+  --color-accent: #3d6b52;
+  --color-accent-hover: #2f5641;
+  --color-border: #e6e1d4;
+  --color-danger: #b0473a;
+  --color-danger-hover: #93392e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+input {
+  font-family: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-card {
+  animation: fadeIn 0.25s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 42, 34, 0.08);
+}
+
+.filter-pill {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.icon-button {
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border-radius: 6px;
+}
+
+.icon-button:hover {
+  background-color: #f4f1ea;
+}
+
+.primary-button {
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.primary-button:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+.primary-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.toast {
+  animation: slideIn 0.2s ease;
+}
+
+.modal-overlay {
+  animation: overlayIn 0.15s ease;
+}
