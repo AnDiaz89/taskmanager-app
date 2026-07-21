@@ -1,46 +1,36 @@
-# Task Manager API
+# Task Manager App
 
-API REST para gestión de tareas con autenticación de usuarios mediante JWT. Cada usuario tiene su propia lista de tareas privada, con soporte para prioridades y fechas límite.
+Aplicación web para gestión de tareas personales, con autenticación de usuarios, prioridades, fechas límite y filtros. Frontend construido en React, conectado a una API REST propia.
 
-**Demo en vivo:** https://taskmanager-api-j5j7.onrender.com
-**Frontend conectado:** https://taskmanager-app-hazel.vercel.app
+**Demo en vivo:** https://taskmanager-app-hazel.vercel.app
+**Backend (repositorio separado):** https://github.com/AnDiaz89/taskmanager-api
 
 ## Características
 
-- Registro e inicio de sesión con JWT
-- Contraseñas encriptadas con bcrypt
-- CRUD completo de tareas (crear, leer, actualizar, eliminar)
-- Rutas protegidas: cada usuario solo puede ver y modificar sus propias tareas
-- Prioridad y fecha límite por tarea
-- Validación de datos (formato de email, longitud de contraseña, campos obligatorios)
-- Tests automatizados con Jest y Supertest
+- Registro e inicio de sesión de usuarios
+- Sesión persistente (el token se guarda en el navegador)
+- Rutas protegidas: solo usuarios logueados pueden ver el dashboard
+- Crear, editar, completar y eliminar tareas
+- Prioridad (alta / media / baja) con indicadores de color
+- Fecha límite, con aviso visual si la tarea está vencida
+- Filtros: todas / pendientes / completadas
+- Confirmación antes de eliminar una tarea
+- Notificaciones (toasts) al crear, editar o eliminar
+- Diseño responsive
 
 ## Stack tecnológico
 
-- **Node.js** + **Express**
-- **PostgreSQL** (alojado en [Neon](https://neon.tech))
-- **Prisma ORM**
-- **JWT** (jsonwebtoken) para autenticación
-- **bcryptjs** para hasheo de contraseñas
-- **Jest** + **Supertest** para testing
-
-## Endpoints
-
-| Método | Ruta | Descripción | Requiere token |
-|---|---|---|---|
-| POST | `/api/auth/register` | Registrar usuario | No |
-| POST | `/api/auth/login` | Iniciar sesión | No |
-| GET | `/api/tasks` | Obtener tareas del usuario | Sí |
-| POST | `/api/tasks` | Crear tarea | Sí |
-| PUT | `/api/tasks/:id` | Actualizar tarea | Sí |
-| DELETE | `/api/tasks/:id` | Eliminar tarea | Sí |
+- **React** (con Vite)
+- **React Router** para navegación
+- **Axios** para peticiones HTTP, con interceptor para agregar el token automáticamente
+- **Context API** para el manejo de sesión
 
 ## Cómo correrlo localmente
 
 1. Clona el repositorio:
 ```bash
-git clone https://github.com/AnDiaz89/taskmanager-api.git
-cd taskmanager-api
+git clone https://github.com/AnDiaz89/taskmanager-app.git
+cd taskmanager-app
 ```
 
 2. Instala las dependencias:
@@ -48,29 +38,25 @@ cd taskmanager-api
 npm install
 ```
 
-3. Crea un archivo `.env` en la raíz con:
+3. Si quieres apuntar a un backend local en vez del desplegado, edita `src/api/axios.js` y cambia la `baseURL` a `http://localhost:3000/api`.
 
-DATABASE_URL="tu_connection_string_de_postgresql"
-JWT_SECRET="tu_clave_secreta"
-
-4. Aplica las migraciones de la base de datos:
-```bash
-npx prisma migrate dev
-```
-
-5. Inicia el servidor:
+4. Inicia el servidor de desarrollo:
 ```bash
 npm run dev
 ```
 
-El servidor corre por defecto en `http://localhost:3000`.
+La app corre por defecto en `http://localhost:5173`.
 
-## Correr los tests
+> Nota: necesitas el [backend](https://github.com/AnDiaz89/taskmanager-api) corriendo (local o el desplegado) para que la app funcione, ya que no tiene datos propios.
 
-```bash
-npm test
-```
+## Estructura del proyecto
+
+src/
+api/ # Configuración de Axios y conexión con el backend
+components/ # Componentes reutilizables (ej. rutas protegidas)
+context/ # Contexto de autenticación (estado global de sesión)
+pages/ # Páginas de la app (Login, Register, Dashboard)
 
 ## Lo que aprendí
 
-Este proyecto fue mi primera vez configurando autenticación JWT desde cero y desplegando un backend con base de datos en producción. Los principales retos fueron manejar correctamente las variables de entorno entre el ambiente local y el de producción, y asegurar que las rutas protegidas verificaran correctamente la pertenencia de cada tarea a su usuario.
+Este fue mi primer proyecto full stack completo, construido de cero. Aprendí a manejar autenticación en el frontend con Context API, a interceptar peticiones con Axios para adjuntar el token automáticamente, y a resolver problemas específicos del despliegue de una SPA (como configurar rewrites en Vercel para que las rutas de React Router funcionaran correctamente al recargar la página).
