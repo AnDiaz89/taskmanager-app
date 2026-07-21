@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: 'https://taskmanager-api-j5j7.onrender.com/api',
 });
 
 // Interceptor: agrega el token automáticamente a cada petición
