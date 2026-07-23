@@ -22,6 +22,8 @@ function Dashboard() {
   const [toast, setToast] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const { logout } = useAuth();
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     loadTasks();
@@ -42,7 +44,24 @@ function Dashboard() {
       setLoading(false);
     }
   }
+  
+async function handleGenerateWithAI() {
+    if (!aiPrompt.trim()) return;
 
+    setAiLoading(true);
+    setError('');
+
+    try {
+      const response = await api.post('/ai/generate-task', { prompt: aiPrompt });
+      setTitle(response.data.title);
+      setDescription(response.data.description);
+      setAiPrompt('');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Error al generar la tarea con IA');
+    } finally {
+      setAiLoading(false);
+    }
+  }
   async function handleCreateTask(e) {
     e.preventDefault();
     if (!title.trim()) return;
@@ -152,6 +171,32 @@ function Dashboard() {
           <button onClick={logout} style={styles.logoutButton} className="icon-button">
             Cerrar sesión
           </button>
+        </div>
+
+        <div style={styles.aiBox}>
+          <p style={styles.aiLabel}>✨ Describe una idea y deja que la IA la convierta en tarea</p>
+          <div style={styles.aiRow}>
+            <input
+              type="text"
+              placeholder="Ej: preparar presentación para el cliente"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              style={styles.aiInput}
+            />
+            <button
+              type="button"
+              onClick={handleGenerateWithAI}
+              disabled={!aiPrompt.trim() || aiLoading}
+              className="primary-button"
+              style={{
+                ...styles.aiButton,
+                opacity: aiPrompt.trim() && !aiLoading ? 1 : 0.5,
+                cursor: aiPrompt.trim() && !aiLoading ? 'pointer' : 'not-allowed',
+              }}
+            >
+              {aiLoading ? 'Generando...' : 'Generar con IA'}
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleCreateTask} style={styles.form}>
@@ -389,6 +434,11 @@ const styles = {
     fontSize: '13px',
   },
   form: { backgroundColor: '#ffffff', border: '1px solid #e6e1d4', borderRadius: '12px', padding: '20px', marginBottom: '20px' },
+  aiBox: { backgroundColor: '#f4f1ea', border: '1px dashed #3d6b52', borderRadius: '12px', padding: '16px', marginBottom: '16px' },
+  aiLabel: { fontSize: '13px', fontWeight: 500, color: '#3d6b52', margin: '0 0 10px 0' },
+  aiRow: { display: 'flex', gap: '8px' },
+  aiInput: { flex: 1, padding: '10px 12px', border: '1px solid #e6e1d4', borderRadius: '8px', fontSize: '14px', outline: 'none', backgroundColor: '#ffffff' },
+  aiButton: { padding: '10px 16px', backgroundColor: '#3d6b52', color: '#ffffff', borderRadius: '8px', fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap' },
   input: { width: '100%', padding: '10px 12px', border: '1px solid #e6e1d4', borderRadius: '8px', fontSize: '15px', outline: 'none' },
   formRow: { display: 'flex', gap: '10px', marginTop: '10px' },
   select: { flex: 1, padding: '10px 12px', border: '1px solid #e6e1d4', borderRadius: '8px', fontSize: '14px', backgroundColor: '#ffffff' },
